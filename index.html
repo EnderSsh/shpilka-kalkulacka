@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><script id="theme-init">(()=>{let theme='light';try{const saved=localStorage.getItem('shpilka-ui-theme');if(saved==='dark'||saved==='light')theme=saved}catch{}document.documentElement.dataset.theme=theme})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#111827">\n<meta name="mobile-build" content="v100">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Kalkulačka sadrokartónového stropu</title>
@@ -1533,7 +1533,7 @@ body[data-mobile-view] #drawingComparisons #orientationCompare{display:block!imp
 <dialog id="pricePreview"><h2>Načítať cenník</h2><p class="small">Zmenia sa iba uvedené ceny v aktuálnom projekte.</p><div id="pricePreviewTable" class="previewScroll"></div><div class="row" style="margin-top:15px"><button id="applyPrices" class="primary">Použiť ceny</button><button id="cancelPrices">Zrušiť</button></div></dialog>
 
 <div id="mobileDimBar" class="mobileDimBar" aria-live="polite">
-  <input id="mobileDimInput" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Presný rozmer steny v metroch" placeholder="Rozmer v m, napr. 3,70">
+  <input id="mobileDimInput" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Presný rozmer steny v metroch" placeholder="Rozmer v m, napr. 3,70">
   <button id="mobileDimOk" class="blue">OK</button>
   <button id="mobileDimCancel">×</button>
 </div>
@@ -2541,6 +2541,9 @@ function focusMobileDimensionNow(){
       : (pending?String(pending.len).replace('.',','):'');
     try{mi.focus({preventScroll:true})}catch(_){mi.focus()}
     mi.select();
+    setTimeout(positionMobileDimBar,40);
+    setTimeout(positionMobileDimBar,180);
+    setTimeout(positionMobileDimBar,360);
   }
 }
 
@@ -4573,7 +4576,7 @@ let mobileDrawWidth=760;
 
 function isMobile(){return mobileMQ.matches}
 
-const MOBILE_INTRO_KEY='sdk_mobile_intro_v99';
+const MOBILE_INTRO_KEY='sdk_mobile_intro_v100';
 function mobileIntroDone(){try{return localStorage.getItem(MOBILE_INTRO_KEY)==='1'}catch(_){return false}}
 function markMobileIntroDone(){try{localStorage.setItem(MOBILE_INTRO_KEY,'1')}catch(_){}}
 
@@ -4629,6 +4632,22 @@ function setMobileView(view){
   window.scrollTo({top:0,behavior:'auto'});
 }
 
+function positionMobileDimBar(){
+  const bar=$('#mobileDimBar');
+  if(!bar||!isMobile()||!bar.classList.contains('show'))return;
+  const vv=window.visualViewport;
+  const h=Math.max(56,bar.offsetHeight||0);
+  if(vv){
+    // Keep the editor inside the visible viewport, directly above the on-screen keyboard.
+    const top=Math.max(vv.offsetTop+8, vv.offsetTop+vv.height-h-10);
+    bar.style.top=Math.round(top)+'px';
+    bar.style.bottom='auto';
+  }else{
+    bar.style.top='auto';
+    bar.style.bottom='calc(10px + env(safe-area-inset-bottom))';
+  }
+}
+
 function updateMobileDimBar(){
   const bar=$('#mobileDimBar');
   const input=$('#mobileDimInput');
@@ -4642,8 +4661,7 @@ function updateMobileDimBar(){
     const svgInput=$('#pendingDim');
     const current=svgInput?svgInput.value:(pending.raw!=null?String(pending.raw):String(pending.len).replace('.',','));
     if(document.activeElement!==input)input.value=current;
-    bar.style.top='calc(env(safe-area-inset-top) + 96px)';
-    bar.style.bottom='auto';
+    requestAnimationFrame(positionMobileDimBar);
   }else{
     bar.style.top='';
     bar.style.bottom='';
@@ -5253,8 +5271,14 @@ $$('#settingsSection .card>h2').forEach(h=>{
   });
 });
 
+// Keep the exact-dimension editor attached to the visible viewport while the keyboard moves.
+if(window.visualViewport){
+  visualViewport.addEventListener('resize',()=>{if(isMobile())positionMobileDimBar()});
+  visualViewport.addEventListener('scroll',()=>{if(isMobile())positionMobileDimBar()});
+}
+
 // Keep app layout correct after rotation / resize.
-const handleMobileChange=()=>{initMobileUI();updateMobileDimBar()};
+const handleMobileChange=()=>{initMobileUI();updateMobileDimBar();positionMobileDimBar()};
 if(mobileMQ.addEventListener)mobileMQ.addEventListener('change',handleMobileChange);
 else mobileMQ.addListener(handleMobileChange);
 window.addEventListener('orientationchange',()=>setTimeout(handleMobileChange,150));
