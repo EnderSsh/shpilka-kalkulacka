@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><script id="theme-init">(()=>{let theme='light';try{const saved=localStorage.getItem('shpilka-ui-theme');if(saved==='dark'||saved==='light')theme=saved}catch{}document.documentElement.dataset.theme=theme})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111827">\n<meta name="mobile-build" content="v100">
+<meta name="theme-color" content="#111827">\n<meta name="mobile-build" content="v101">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Kalkulačka sadrokartónového stropu</title>
@@ -1193,6 +1193,96 @@ body[data-mobile-view] #drawingComparisons #orientationCompare{display:block!imp
   #mobileFirstRun .firstRunActions button{width:100%}
 }
 </style>
+<style id="mobile-v101-style">
+@media screen and (max-width:760px){
+  /* Full-screen drawing is tied directly to the active mobile view, not only a JS helper class. */
+  body[data-mobile-view="draw"]{overflow:hidden!important;background:#fff!important}
+  body[data-mobile-view="draw"] header,
+  body[data-mobile-view="draw"] #workspaceBar,
+  body[data-mobile-view="draw"] .mobileNav,
+  body[data-mobile-view="draw"] .side,
+  body[data-mobile-view="draw"] #missingPriceNotice,
+  body[data-mobile-view="draw"] .overviewToggleRow,
+  body[data-mobile-view="draw"] #liveSummary,
+  body[data-mobile-view="draw"] #orientationCompare,
+  body[data-mobile-view="draw"] #resultsSection,
+  body[data-mobile-view="draw"] #legacyExports,
+  body[data-mobile-view="draw"] #materialSection{display:none!important}
+  body[data-mobile-view="draw"] main{
+    display:block!important;padding:0!important;margin:0!important;
+    width:100%!important;height:100dvh!important;overflow:hidden!important;
+  }
+  body[data-mobile-view="draw"] .work{
+    display:block!important;width:100%!important;height:100dvh!important;max-height:none!important;
+    padding:0!important;margin:0!important;overflow:hidden!important;
+  }
+  body[data-mobile-view="draw"] #drawSection{
+    position:fixed!important;inset:0!important;z-index:10000!important;
+    width:100vw!important;height:100dvh!important;max-height:100dvh!important;
+    display:flex!important;flex-direction:column!important;
+    padding:calc(7px + env(safe-area-inset-top)) 7px calc(7px + env(safe-area-inset-bottom))!important;
+    margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;
+  }
+  body[data-mobile-view="draw"] #drawSection .drawTopHead{
+    flex:0 0 auto!important;margin:0 0 4px!important;padding:0 2px!important;min-height:30px!important;
+  }
+  body[data-mobile-view="draw"] #drawSection .drawTopHead h2{font-size:16px!important}
+  body[data-mobile-view="draw"] #drawSection .mobileDrawActions{
+    flex:0 0 auto!important;grid-template-columns:1fr 1fr 1.2fr!important;margin:4px 0 6px!important;
+  }
+  body[data-mobile-view="draw"] #drawSection .drawWrap{
+    flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;
+    overflow:auto!important;border-radius:10px!important;margin:0!important;
+  }
+
+  /* When entering a length, the drawing remains full screen and only the numeric pad overlays its bottom. */
+  body.mobileDimOpen #drawSection .drawTopHead,
+  body.mobileDimOpen #drawSection .mobileDrawActions{display:none!important}
+  body.mobileDimOpen #drawSection{padding:0!important}
+  body.mobileDimOpen #drawSection .drawWrap{border-radius:0!important;border:0!important}
+
+  .mobileDimBar{
+    position:fixed!important;left:8px!important;right:8px!important;
+    top:auto!important;bottom:calc(226px + env(safe-area-inset-bottom))!important;
+    z-index:12060!important;
+    grid-template-columns:minmax(0,1fr) 64px 48px!important;
+    gap:6px!important;padding:7px!important;
+    background:#eff6ff!important;border:1px solid #93c5fd!important;border-radius:12px!important;
+    box-shadow:0 8px 28px rgba(15,23,42,.25)!important;
+  }
+  .mobileDimBar input{
+    min-height:50px!important;font-size:22px!important;font-weight:800!important;text-align:center!important;
+    user-select:none!important;-webkit-user-select:none!important;caret-color:transparent!important;
+  }
+  .mobileDimBar input::selection{background:transparent!important;color:inherit!important}
+  .mobileDimBar button{min-height:50px!important;font-size:16px!important}
+
+  .mobileNumPad{
+    display:none;position:fixed;left:0;right:0;bottom:0;z-index:12055;
+    grid-template-columns:repeat(4,1fr);gap:6px;
+    padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+    background:rgba(20,31,25,.98);border-top:1px solid rgba(255,255,255,.16);
+    box-shadow:0 -8px 26px rgba(0,0,0,.28);
+  }
+  body.mobileDimOpen .mobileNumPad{display:grid!important}
+  .mobileNumPad button{
+    min-height:48px!important;border-radius:10px!important;font-size:21px!important;font-weight:800!important;
+    background:#273b30!important;color:#eef7f1!important;border:1px solid #476052!important;
+  }
+  .mobileNumPad button:active{transform:scale(.98)}
+  .mobileNumPad .enterKey{
+    grid-column:3/5!important;background:#82c9a7!important;color:#10221a!important;border-color:#82c9a7!important;
+  }
+
+  /* Remove all remaining explanatory clutter inside the drawing view. */
+  body[data-mobile-view="draw"] .mobileFingerHint,
+  body[data-mobile-view="draw"] .mobileDirection,
+  body[data-mobile-view="draw"] .drawHelp,
+  body[data-mobile-view="draw"] .drawHeadHint,
+  body[data-mobile-view="draw"] .drawBottomBar,
+  body[data-mobile-view="draw"] .mobileZoom{display:none!important}
+}
+</style>
 </head>
 <body data-app-page="calculator" data-mobile-view="draw">
 <header>
@@ -1533,9 +1623,15 @@ body[data-mobile-view] #drawingComparisons #orientationCompare{display:block!imp
 <dialog id="pricePreview"><h2>Načítať cenník</h2><p class="small">Zmenia sa iba uvedené ceny v aktuálnom projekte.</p><div id="pricePreviewTable" class="previewScroll"></div><div class="row" style="margin-top:15px"><button id="applyPrices" class="primary">Použiť ceny</button><button id="cancelPrices">Zrušiť</button></div></dialog>
 
 <div id="mobileDimBar" class="mobileDimBar" aria-live="polite">
-  <input id="mobileDimInput" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Presný rozmer steny v metroch" placeholder="Rozmer v m, napr. 3,70">
+  <input id="mobileDimInput" type="text" inputmode="none" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" readonly aria-label="Presný rozmer steny v metroch" placeholder="Rozmer v m, napr. 3,70">
   <button id="mobileDimOk" class="blue">OK</button>
   <button id="mobileDimCancel">×</button>
+</div>
+<div id="mobileNumPad" class="mobileNumPad" aria-label="Numerická klávesnica">
+  <button type="button" data-key="1">1</button><button type="button" data-key="2">2</button><button type="button" data-key="3">3</button><button type="button" data-key="back">⌫</button>
+  <button type="button" data-key="4">4</button><button type="button" data-key="5">5</button><button type="button" data-key="6">6</button><button type="button" data-key=",">,</button>
+  <button type="button" data-key="7">7</button><button type="button" data-key="8">8</button><button type="button" data-key="9">9</button><button type="button" data-key=".">.</button>
+  <button type="button" data-key="0">0</button><button type="button" data-key="00">00</button><button type="button" data-key="enter" class="primary enterKey">Enter</button>
 </div>
 
 <nav class="mobileNav" id="mobileNav" aria-label="Mobilná navigácia">
@@ -2539,11 +2635,8 @@ function focusMobileDimensionNow(){
     mi.value=(pending&&pending.raw!=null)
       ? String(pending.raw)
       : (pending?String(pending.len).replace('.',','):'');
-    try{mi.focus({preventScroll:true})}catch(_){mi.focus()}
-    mi.select();
-    setTimeout(positionMobileDimBar,40);
-    setTimeout(positionMobileDimBar,180);
-    setTimeout(positionMobileDimBar,360);
+    // Do not focus/select the whole value on iPhone; the custom keypad edits from the end.
+    try{mi.blur()}catch(_){}
   }
 }
 
@@ -4635,17 +4728,9 @@ function setMobileView(view){
 function positionMobileDimBar(){
   const bar=$('#mobileDimBar');
   if(!bar||!isMobile()||!bar.classList.contains('show'))return;
-  const vv=window.visualViewport;
-  const h=Math.max(56,bar.offsetHeight||0);
-  if(vv){
-    // Keep the editor inside the visible viewport, directly above the on-screen keyboard.
-    const top=Math.max(vv.offsetTop+8, vv.offsetTop+vv.height-h-10);
-    bar.style.top=Math.round(top)+'px';
-    bar.style.bottom='auto';
-  }else{
-    bar.style.top='auto';
-    bar.style.bottom='calc(10px + env(safe-area-inset-bottom))';
-  }
+  // v101 uses an in-app numeric keypad, so the editor has a stable position above it.
+  bar.style.top='auto';
+  bar.style.bottom='calc(226px + env(safe-area-inset-bottom))';
 }
 
 function updateMobileDimBar(){
@@ -5247,6 +5332,7 @@ $('#mobileDimOk')?.addEventListener('click',commitMobileDimension);
 $('#mobileDimCancel')?.addEventListener('click',()=>{
   pending=null;hoverWall=null;smartGuide=null;
   drawingPaused=pts.length>0&&!closed;
+  document.body.classList.remove('mobileDimOpen');
   render();
 });
 $('#mobileDimInput')?.addEventListener('keydown',e=>{
@@ -5254,6 +5340,45 @@ $('#mobileDimInput')?.addEventListener('keydown',e=>{
     e.preventDefault();
     commitMobileDimension();
   }
+});
+
+function mobileNumPadPress(key){
+  const input=$('#mobileDimInput');
+  if(!input||!document.body.classList.contains('mobileDimOpen'))return;
+  let value=String(input.value||'');
+  if(key==='enter'){
+    commitMobileDimension();
+    return;
+  }
+  if(key==='back'){
+    input.value=value.slice(0,-1);
+    return;
+  }
+  if(key===','||key==='.'){
+    if(/[.,]/.test(value))return;
+    input.value=(value||'0')+key;
+    return;
+  }
+  if(/^\d{1,2}$/.test(key)){
+    // Avoid a useless leading zero, but keep 0 before a decimal separator.
+    if(value==='0' && !/[.,]/.test(value) && key!=='00') value='';
+    input.value=value+key;
+  }
+}
+
+$('#mobileNumPad [data-key]').forEach(b=>{
+  b.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    mobileNumPadPress(b.dataset.key);
+  });
+});
+document.addEventListener('keydown',e=>{
+  if(!isMobile()||!document.body.classList.contains('mobileDimOpen'))return;
+  if(/^\d$/.test(e.key)){e.preventDefault();mobileNumPadPress(e.key);return}
+  if(e.key===','||e.key==='.'){e.preventDefault();mobileNumPadPress(e.key);return}
+  if(e.key==='Backspace'){e.preventDefault();mobileNumPadPress('back');return}
+  if(e.key==='Enter'){e.preventDefault();mobileNumPadPress('enter');return}
+  if(e.key==='Escape'){e.preventDefault();$('#mobileDimCancel')?.click()}
 });
 
 $('#mobileZoomOut')?.addEventListener('click',()=>setMobileDrawWidth(mobileDrawWidth-180));
