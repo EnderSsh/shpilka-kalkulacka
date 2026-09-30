@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><script id="theme-init">(()=>{let theme='light';try{const saved=localStorage.getItem('shpilka-ui-theme');if(saved==='dark'||saved==='light')theme=saved}catch{}document.documentElement.dataset.theme=theme})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111827">\n<meta name="mobile-build" content="v101">
+<meta name="theme-color" content="#111827">\n<meta name="mobile-build" content="v102">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Kalkulačka sadrokartónového stropu</title>
@@ -1283,6 +1283,23 @@ body[data-mobile-view] #drawingComparisons #orientationCompare{display:block!imp
   body[data-mobile-view="draw"] .mobileZoom{display:none!important}
 }
 </style>
+
+<style id="mobile-v102-style">
+.mobileNumPad{display:none}
+@media screen and (max-width:760px){
+  body[data-mobile-view="draw"] #drawSvg{
+    width:var(--mobile-canvas-width,760px)!important;min-width:0!important;
+    height:var(--mobile-canvas-height,507px)!important;max-height:none!important;
+    aspect-ratio:3/2!important;
+  }
+  body[data-mobile-view="draw"] #drawSection{background:var(--card)!important;color:var(--text)!important}
+  body[data-mobile-view="draw"] #drawStats,
+  body[data-mobile-view="draw"] #drawSection #drawingComparisons,
+  body[data-mobile-view="draw"] #drawSection .summaryFold{display:none!important}
+  body[data-mobile-view="draw"] #drawSection .drawTopHead h2{color:var(--text)!important}
+  .mobileDimBar input{caret-color:var(--text)!important}
+}
+</style>
 </head>
 <body data-app-page="calculator" data-mobile-view="draw">
 <header>
@@ -2244,14 +2261,17 @@ function bounds(poly){
 function drawGrid(svg){
   const ns='http://www.w3.org/2000/svg';
   const add=(tag,a={})=>{const e=document.createElementNS(ns,tag);Object.entries(a).forEach(([k,v])=>e.setAttribute(k,String(v)));svg.appendChild(e);return e}
-  for(let x=0;x<=1500;x+=10){
-    const major=x%100===0;
-    add('line',{x1:x,y1:0,x2:x,y2:1000,stroke:major?'#cbd5e1':'#eef2f6','stroke-width':major?1.25:.65});
-  }
-  for(let y=0;y<=1000;y+=10){
-    const major=y%100===0;
-    add('line',{x1:0,y1:y,x2:1500,y2:y,stroke:major?'#cbd5e1':'#eef2f6','stroke-width':major?1.25:.65});
-  }
+  const defs=add('defs');
+  const pattern=document.createElementNS(ns,'pattern');
+  pattern.id='drawingGrid';pattern.setAttribute('width','100');pattern.setAttribute('height','100');
+  pattern.setAttribute('patternUnits','userSpaceOnUse');defs.appendChild(pattern);
+  const minor=document.createElementNS(ns,'path');
+  let lines='';
+  for(let n=10;n<100;n+=10)lines+=`M${n} 0V100 M0 ${n}H100 `;
+  minor.setAttribute('d',lines);minor.setAttribute('fill','none');minor.setAttribute('stroke','#eef2f6');minor.setAttribute('stroke-width','.65');pattern.appendChild(minor);
+  const major=document.createElementNS(ns,'path');
+  major.setAttribute('d','M100 0H0V100');major.setAttribute('fill','none');major.setAttribute('stroke','#cbd5e1');major.setAttribute('stroke-width','1.25');pattern.appendChild(major);
+  add('rect',{width:1500,height:1000,fill:'url(#drawingGrid)'});
   for(let m=0;m<=15;m++){const t=add('text',{x:m*100+5,y:18,'font-size':13,fill:'#98a2b3'});t.textContent=m+' m'}
   for(let m=1;m<=10;m++){const t=add('text',{x:5,y:m*100-5,'font-size':13,fill:'#98a2b3'});t.textContent=m+' m'}
 }
@@ -2326,7 +2346,8 @@ function renderDrawOriginal(){
   // Počas pohybu myši sa viewBox nemení, takže kurzor ostáva presne pod bodom.
   const maxCommittedY=pts.length?Math.max(...pts.map(p=>p.y*PPM)):0;
   const neededH=maxCommittedY>0?Math.ceil((maxCommittedY+80)/40)*40:520;
-  const viewH=Math.max(520,Math.min(1000,neededH));
+  const viewH=isMobile()?1000:Math.max(520,Math.min(1000,neededH));
+  if(isMobile())sizeMobileDrawing();
   svg.setAttribute('viewBox',`0 0 1500 ${viewH}`);
   svg.style.aspectRatio=`1500 / ${viewH}`;
   svg.innerHTML='';drawGrid(svg);
@@ -2635,8 +2656,8 @@ function focusMobileDimensionNow(){
     mi.value=(pending&&pending.raw!=null)
       ? String(pending.raw)
       : (pending?String(pending.len).replace('.',','):'');
-    // Do not focus/select the whole value on iPhone; the custom keypad edits from the end.
-    try{mi.blur()}catch(_){}
+    mi.focus({preventScroll:true});
+    mi.setSelectionRange(mi.value.length,mi.value.length);
   }
 }
 
@@ -2821,7 +2842,7 @@ $('#drawSvg').addEventListener('click',e=>{
     setTimeout(()=>{
       if(isMobile()){
         const mi=$('#mobileDimInput');
-        if(mi){mi.focus();mi.select()}
+        if(mi){mi.focus({preventScroll:true});mi.setSelectionRange(mi.value.length,mi.value.length)}
       }else{
         const input=$('#pendingDim');
         if(input){input.focus();input.select()}
@@ -3951,6 +3972,9 @@ function requiredGridSetupValid(showNotice=false){
   }
   if(showNotice&&!ok){
     const target=!type?$('#suspensionType'):$('#ceilingDrop');
+    if(isMobile())setMobileView('settings');
+    target?.closest('.card')?.classList.remove('mobileCollapsed');
+    for(let el=target?.parentElement;el;el=el.parentElement)if(el.tagName==='DETAILS')el.open=true;
     target?.focus({preventScroll:false});
     target?.scrollIntoView({block:'center',behavior:'smooth'});
   }
@@ -4702,14 +4726,14 @@ function ensureMobileFirstRun(){
       setMobileView('draw');
     };
   }
-  $('#settingsSection .card').forEach(card=>card.classList.remove('mobileCollapsed'));
-  $('#settingsSection details').forEach(d=>d.open=true);
+  $$('#settingsSection .card').forEach(card=>card.classList.remove('mobileCollapsed'));
+  $$('#settingsSection details').forEach(d=>d.open=true);
 }
 
 function setMobileView(view){
   document.body.dataset.mobileView=view;
-  $('.viewNav [data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-  $('#mobileNav [data-mobile-view]').forEach(b=>b.classList.toggle('active',b.dataset.mobileView===view));
+  $$('.viewNav [data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+  $$('#mobileNav [data-mobile-view]').forEach(b=>b.classList.toggle('active',b.dataset.mobileView===view));
 
   const fullDraw=isMobile()&&view==='draw';
   document.body.classList.toggle('mobileDrawingMode',fullDraw);
@@ -4718,19 +4742,20 @@ function setMobileView(view){
   if(isMobile()&&view==='settings'){
     ensureMobileFirstRun();
     if(!mobileIntroDone()){
-      $('#settingsSection .card').forEach(card=>card.classList.remove('mobileCollapsed'));
-      $('#settingsSection details').forEach(d=>d.open=true);
+      $$('#settingsSection .card').forEach(card=>card.classList.remove('mobileCollapsed'));
+      $$('#settingsSection details').forEach(d=>d.open=true);
     }
   }
   window.scrollTo({top:0,behavior:'auto'});
+  updateMobileDimBar();
+  requestAnimationFrame(sizeMobileDrawing);
 }
 
 function positionMobileDimBar(){
   const bar=$('#mobileDimBar');
   if(!bar||!isMobile()||!bar.classList.contains('show'))return;
-  // v101 uses an in-app numeric keypad, so the editor has a stable position above it.
   bar.style.top='auto';
-  bar.style.bottom='calc(226px + env(safe-area-inset-bottom))';
+  bar.style.setProperty('bottom',($('#mobileNumPad').getBoundingClientRect().height+4)+'px','important');
 }
 
 function updateMobileDimBar(){
@@ -4738,14 +4763,14 @@ function updateMobileDimBar(){
   const input=$('#mobileDimInput');
   if(!bar||!input)return;
 
-  const show=isMobile() && pending && !closed;
+  const show=isMobile() && document.body.dataset.mobileView==='draw' && pending && !closed;
   bar.classList.toggle('show',!!show);
   document.body.classList.toggle('mobileDimOpen',!!show);
 
   if(show){
     const svgInput=$('#pendingDim');
     const current=svgInput?svgInput.value:(pending.raw!=null?String(pending.raw):String(pending.len).replace('.',','));
-    if(document.activeElement!==input)input.value=current;
+    if(input.value!==current){input.value=current;input.setSelectionRange(current.length,current.length)}
     requestAnimationFrame(positionMobileDimBar);
   }else{
     bar.style.top='';
@@ -4770,7 +4795,7 @@ function startMobileWall(dir){
   render();
   setTimeout(()=>{
     const mi=$('#mobileDimInput');
-    if(mi){mi.focus();mi.select()}
+    if(mi){mi.focus({preventScroll:true});mi.setSelectionRange(mi.value.length,mi.value.length)}
   },30);
 }
 
@@ -4783,10 +4808,18 @@ function commitMobileDimension(){
   commitPending();
 }
 
+function sizeMobileDrawing(){
+  const wrap=$('#drawSection .drawWrap'),svg=$('#drawSvg');
+  if(!isMobile()||!wrap||!svg||!wrap.clientHeight)return;
+  // Keep square metres square and fill the full available height. The 15 × 10 m world is unchanged.
+  const width=Math.max(mobileDrawWidth,wrap.clientWidth,wrap.clientHeight*1.5);
+  svg.style.setProperty('--mobile-canvas-width',width+'px');
+  svg.style.setProperty('--mobile-canvas-height',(width/1.5)+'px');
+}
 function setMobileDrawWidth(width){
   mobileDrawWidth=Math.max(360,Math.min(1350,width));
   const svg=$('#drawSvg');
-  if(svg && isMobile())svg.style.minWidth=mobileDrawWidth+'px';
+  if(svg && isMobile()){svg.style.minWidth=mobileDrawWidth+'px';sizeMobileDrawing()}
 }
 
 function initMobileUI(){
@@ -4798,12 +4831,12 @@ function initMobileUI(){
     if(!mobileIntroDone()){
       document.body.dataset.mobileView='settings';
       document.body.classList.remove('mobileDrawingMode');
-      $('#settingsSection .card').forEach(card=>card.classList.remove('mobileCollapsed'));
-      $('#settingsSection details').forEach(d=>d.open=true);
+      $$('#settingsSection .card').forEach(card=>card.classList.remove('mobileCollapsed'));
+      $$('#settingsSection details').forEach(d=>d.open=true);
     }else{
       if(!document.body.dataset.mobileView)document.body.dataset.mobileView='draw';
       document.body.classList.toggle('mobileDrawingMode',document.body.dataset.mobileView==='draw');
-      $('#settingsSection .card').forEach((card,i)=>{
+      $$('#settingsSection .card').forEach((card,i)=>{
         if(!card.dataset.mobileInit){
           card.dataset.mobileInit='1';
           if(i>0 && card.id!=='liveSummary'&&!card.closest('.settingsFold'))card.classList.add('mobileCollapsed');
@@ -5338,6 +5371,7 @@ $('#mobileDimCancel')?.addEventListener('click',()=>{
 $('#mobileDimInput')?.addEventListener('keydown',e=>{
   if(e.key==='Enter'){
     e.preventDefault();
+    e.stopPropagation();
     commitMobileDimension();
   }
 });
@@ -5345,32 +5379,31 @@ $('#mobileDimInput')?.addEventListener('keydown',e=>{
 function mobileNumPadPress(key){
   const input=$('#mobileDimInput');
   if(!input||!document.body.classList.contains('mobileDimOpen'))return;
+  const sync=()=>{if(pending){pending.raw=input.value;const pi=$('#pendingDim');if(pi)pi.value=input.value}input.focus({preventScroll:true});input.setSelectionRange(input.value.length,input.value.length)};
   let value=String(input.value||'');
   if(key==='enter'){
     commitMobileDimension();
     return;
   }
   if(key==='back'){
-    input.value=value.slice(0,-1);
+    input.value=value.slice(0,-1);sync();
     return;
   }
   if(key===','||key==='.'){
     if(/[.,]/.test(value))return;
-    input.value=(value||'0')+key;
+    input.value=(value||'0')+key;sync();
     return;
   }
   if(/^\d{1,2}$/.test(key)){
     // Avoid a useless leading zero, but keep 0 before a decimal separator.
     if(value==='0' && !/[.,]/.test(value) && key!=='00') value='';
-    input.value=value+key;
+    input.value=value+key;sync();
   }
 }
 
-$('#mobileNumPad [data-key]').forEach(b=>{
-  b.addEventListener('pointerdown',e=>{
-    e.preventDefault();
-    mobileNumPadPress(b.dataset.key);
-  });
+$$('#mobileNumPad [data-key]').forEach(b=>{
+  b.addEventListener('pointerdown',e=>e.preventDefault());
+  b.addEventListener('click',()=>mobileNumPadPress(b.dataset.key));
 });
 document.addEventListener('keydown',e=>{
   if(!isMobile()||!document.body.classList.contains('mobileDimOpen'))return;
@@ -5739,6 +5772,7 @@ $('#exportExcel').onclick=async()=>{
 };
 
 setupWorkspace();
+new ResizeObserver(()=>{sizeMobileDrawing();positionMobileDimBar()}).observe($('#drawSection .drawWrap'));
 initMobileUI();
 
 try{$('#projectName').value=localStorage.getItem('shpilka_project_name')||''}catch{}
