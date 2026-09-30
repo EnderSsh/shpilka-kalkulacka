@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><script id="theme-init">(()=>{let theme='light';try{const saved=localStorage.getItem('shpilka-ui-theme');if(saved==='dark'||saved==='light')theme=saved}catch{}document.documentElement.dataset.theme=theme})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111827">\n<meta name="mobile-build" content="v102">
+<meta name="theme-color" content="#111827">\n<meta name="mobile-build" content="v103">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Kalkulačka sadrokartónového stropu</title>
@@ -1300,8 +1300,48 @@ body[data-mobile-view] #drawingComparisons #orientationCompare{display:block!imp
   .mobileDimBar input{caret-color:var(--text)!important}
 }
 </style>
+
+<style id="mobile-v103-style">
+@media screen and (max-width:760px){
+  html.mobileDrawingLocked{overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}
+  body[data-mobile-view="draw"]{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;padding:0!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}
+  body[data-mobile-view="draw"] #drawSection{padding:0!important;touch-action:none!important;overflow:hidden!important}
+  body[data-mobile-view="draw"] #drawSection .drawTopHead{
+    display:flex!important;position:absolute!important;top:0!important;left:0!important;right:0!important;
+    height:calc(44px + env(safe-area-inset-top))!important;min-height:0!important;
+    padding:env(safe-area-inset-top) 10px 0!important;margin:0!important;align-items:center!important;
+    background:var(--card)!important;z-index:13000!important;
+  }
+  #mobileExitDrawing{order:2;margin-left:auto;min-height:36px!important;font-size:14px!important;align-items:center}
+  body[data-mobile-view="draw"] #drawSection .drawTopHead h2{font-size:14px!important}
+  body[data-mobile-view="draw"] #drawSection .mobileDrawActions{
+    display:grid!important;position:fixed!important;left:0!important;right:0!important;bottom:0!important;
+    height:calc(60px + env(safe-area-inset-bottom))!important;
+    padding:7px 8px calc(7px + env(safe-area-inset-bottom))!important;margin:0!important;
+    background:var(--card)!important;border-top:1px solid var(--line);z-index:13000!important;
+    grid-template-columns:1fr 1fr 1fr!important;
+  }
+  body[data-mobile-view="draw"] #drawSection .drawWrap{
+    position:absolute!important;top:calc(44px + env(safe-area-inset-top))!important;
+    bottom:calc(60px + env(safe-area-inset-bottom))!important;left:0!important;right:0!important;
+    width:100%!important;height:auto!important;margin:0!important;padding:0!important;
+    border:0!important;border-radius:0!important;overflow:hidden!important;
+    touch-action:none!important;overscroll-behavior:none!important;-webkit-overflow-scrolling:auto!important;
+  }
+  body[data-mobile-view="draw"] #drawSvg{touch-action:none!important;user-select:none!important;-webkit-user-select:none!important}
+  .mobileNumPad{bottom:calc(60px + env(safe-area-inset-bottom))!important;padding-bottom:8px!important;touch-action:none!important}
+  .mobileDimBar{touch-action:none!important}
+  .mobileNumPad button,.mobileDimBar button,#mobileExitDrawing,.mobileDrawActions button{touch-action:none!important;-webkit-user-select:none!important;user-select:none!important}
+  .mobileDimBar input{pointer-events:none!important;caret-color:transparent!important}
+}
+@media screen and (max-width:760px) and (max-height:500px){
+  .mobileNumPad{gap:3px!important;padding:4px 8px!important}
+  .mobileNumPad button{min-height:30px!important;height:30px!important;font-size:16px!important;padding:2px!important}
+  .mobileDimBar input,.mobileDimBar button{min-height:36px!important;height:36px!important;font-size:18px!important}
+}
+</style>
 </head>
-<body data-app-page="calculator" data-mobile-view="draw">
+<body data-app-page="calculator" data-mobile-view="settings">
 <header>
 <div><h1>Shpilka — kalkulačka sadrokartónového stropu</h1>
   <p>Miestnosti, materiál a projekty na jednom mieste</p></div>
@@ -1513,6 +1553,7 @@ body[data-mobile-view] #drawingComparisons #orientationCompare{display:block!imp
     <div class="drawingHead drawTopHead">
       <div><h2>Obrys miestnosti</h2><span id="drawStats" class="small"></span></div>
 <div class="drawHeadHint small">Šablóna alebo vlastné kreslenie</div>
+      <button id="mobileExitDrawing" class="mobileOnly" type="button" aria-label="Zavrieť kreslenie">Zavrieť ×</button>
     </div>
     <div class="drawHelp">
       Bod → smer → presný rozmer. Po uzavretí klikni priamo na číslo steny a prepíš rozmer.
@@ -1640,7 +1681,7 @@ body[data-mobile-view] #drawingComparisons #orientationCompare{display:block!imp
 <dialog id="pricePreview"><h2>Načítať cenník</h2><p class="small">Zmenia sa iba uvedené ceny v aktuálnom projekte.</p><div id="pricePreviewTable" class="previewScroll"></div><div class="row" style="margin-top:15px"><button id="applyPrices" class="primary">Použiť ceny</button><button id="cancelPrices">Zrušiť</button></div></dialog>
 
 <div id="mobileDimBar" class="mobileDimBar" aria-live="polite">
-  <input id="mobileDimInput" type="text" inputmode="none" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" readonly aria-label="Presný rozmer steny v metroch" placeholder="Rozmer v m, napr. 3,70">
+  <input id="mobileDimInput" type="text" inputmode="none" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" readonly tabindex="-1" aria-label="Presný rozmer steny v metroch" placeholder="Rozmer v m, napr. 3,70">
   <button id="mobileDimOk" class="blue">OK</button>
   <button id="mobileDimCancel">×</button>
 </div>
@@ -2484,7 +2525,8 @@ function renderDrawOriginal(){
   const help=document.querySelector('.drawHelp');if(help)help.style.display=closed?'none':'';
   const badge=$('#roomStateBadge');if(badge){badge.textContent=closed?'uzavretá':'kreslenie';badge.classList.toggle('closed',closed)}
   renderWallList();
-  if(editWall!==null)setTimeout(()=>{const i=$('#editDim');if(i){i.focus();i.select()}},0);
+  if(isMobile())updateMobileDimBar();
+  else if(editWall!==null)setTimeout(()=>{const i=$('#editDim');if(i){i.focus();i.select()}},0);
 }
 
 function renderWallList(){
@@ -2596,7 +2638,7 @@ function startClosedWallEdit(index){
   renderDraw();
   requestAnimationFrame(()=>{
     const input=$('#closedEditDim');
-    if(input){input.focus();input.select()}
+    if(input&&!isMobile()){input.focus();input.select()}
   });
 }
 
@@ -2656,13 +2698,12 @@ function focusMobileDimensionNow(){
     mi.value=(pending&&pending.raw!=null)
       ? String(pending.raw)
       : (pending?String(pending.len).replace('.',','):'');
-    mi.focus({preventScroll:true});
-    mi.setSelectionRange(mi.value.length,mi.value.length);
+    mi.blur();
   }
 }
 
 function mobilePointerDown(e){
-  if(!isMobile())return;
+  if(!isMobile()||e.isPrimary===false)return;
   if(e.button!==undefined && e.button!==0)return;
   if(e.target.id==='pendingDim'||e.target.id==='editDim'||e.target.id==='closedEditDim')return;
 
@@ -2842,7 +2883,7 @@ $('#drawSvg').addEventListener('click',e=>{
     setTimeout(()=>{
       if(isMobile()){
         const mi=$('#mobileDimInput');
-        if(mi){mi.focus({preventScroll:true});mi.setSelectionRange(mi.value.length,mi.value.length)}
+        if(mi)mi.blur()
       }else{
         const input=$('#pendingDim');
         if(input){input.focus();input.select()}
@@ -4690,6 +4731,13 @@ function renderSuspensionHint(){
 
 const mobileMQ=window.matchMedia('(max-width:760px)');
 let mobileDrawWidth=760;
+let mobileEditorToken=null;
+function mobileEditor(){
+  if(pending&&!closed)return {token:pending,input:$('#pendingDim'),commit:commitPending};
+  if(editWall!==null)return {token:'open:'+editWall,input:$('#editDim'),commit:commitEditWall};
+  if(closedEditWall!==null)return {token:'closed:'+closedEditWall,input:$('#closedEditDim'),commit:commitClosedWallEdit};
+  return null;
+}
 
 function isMobile(){return mobileMQ.matches}
 
@@ -4737,6 +4785,8 @@ function setMobileView(view){
 
   const fullDraw=isMobile()&&view==='draw';
   document.body.classList.toggle('mobileDrawingMode',fullDraw);
+  document.documentElement.classList.toggle('mobileDrawingLocked',fullDraw);
+  if(fullDraw){document.activeElement?.blur();const wrap=$('#drawSection .drawWrap');wrap.scrollTop=0;wrap.scrollLeft=0}
   if(!fullDraw)document.body.classList.remove('mobileDimOpen');
 
   if(isMobile()&&view==='settings'){
@@ -4755,7 +4805,7 @@ function positionMobileDimBar(){
   const bar=$('#mobileDimBar');
   if(!bar||!isMobile()||!bar.classList.contains('show'))return;
   bar.style.top='auto';
-  bar.style.setProperty('bottom',($('#mobileNumPad').getBoundingClientRect().height+4)+'px','important');
+  bar.style.setProperty('bottom',($('#mobileNumPad').getBoundingClientRect().height+$('.mobileDrawActions').getBoundingClientRect().height+4)+'px','important');
 }
 
 function updateMobileDimBar(){
@@ -4763,16 +4813,19 @@ function updateMobileDimBar(){
   const input=$('#mobileDimInput');
   if(!bar||!input)return;
 
-  const show=isMobile() && document.body.dataset.mobileView==='draw' && pending && !closed;
+  const editor=mobileEditor();
+  const show=isMobile() && document.body.dataset.mobileView==='draw' && editor;
   bar.classList.toggle('show',!!show);
   document.body.classList.toggle('mobileDimOpen',!!show);
 
   if(show){
-    const svgInput=$('#pendingDim');
-    const current=svgInput?svgInput.value:(pending.raw!=null?String(pending.raw):String(pending.len).replace('.',','));
-    if(input.value!==current){input.value=current;input.setSelectionRange(current.length,current.length)}
+    if(mobileEditorToken!==editor.token){
+      input.value=editor.input?.value||'';mobileEditorToken=editor.token;
+      input.setSelectionRange(input.value.length,input.value.length);
+    }else if(editor.input)editor.input.value=input.value;
     requestAnimationFrame(positionMobileDimBar);
   }else{
+    if(!editor)mobileEditorToken=null;
     bar.style.top='';
     bar.style.bottom='';
   }
@@ -4795,17 +4848,16 @@ function startMobileWall(dir){
   render();
   setTimeout(()=>{
     const mi=$('#mobileDimInput');
-    if(mi){mi.focus({preventScroll:true});mi.setSelectionRange(mi.value.length,mi.value.length)}
+    if(mi)mi.blur()
   },30);
 }
 
 function commitMobileDimension(){
-  if(!pending)return;
-  const mi=$('#mobileDimInput');
-  const pi=$('#pendingDim');
-  if(!mi||!pi)return;
-  pi.value=mi.value;
-  commitPending();
+  const editor=mobileEditor(),input=$('#mobileDimInput');
+  if(!editor?.input||!input)return;
+  editor.input.value=input.value;
+  editor.commit();
+  updateMobileDimBar();
 }
 
 function sizeMobileDrawing(){
@@ -4834,7 +4886,7 @@ function initMobileUI(){
       $$('#settingsSection .card').forEach(card=>card.classList.remove('mobileCollapsed'));
       $$('#settingsSection details').forEach(d=>d.open=true);
     }else{
-      if(!document.body.dataset.mobileView)document.body.dataset.mobileView='draw';
+      if(!document.body.dataset.mobileView)document.body.dataset.mobileView='settings';
       document.body.classList.toggle('mobileDrawingMode',document.body.dataset.mobileView==='draw');
       $$('#settingsSection .card').forEach((card,i)=>{
         if(!card.dataset.mobileInit){
@@ -4844,8 +4896,9 @@ function initMobileUI(){
       });
     }
   }else{
-    if(!document.body.dataset.mobileView)document.body.dataset.mobileView='draw';
+    if(!document.body.dataset.mobileView||document.body.dataset.mobileView==='settings')document.body.dataset.mobileView='draw';
     document.body.classList.remove('mobileDrawingMode','mobileDimOpen');
+    document.documentElement.classList.remove('mobileDrawingLocked');
     const svg=$('#drawSvg');
     if(svg)svg.style.minWidth='';
   }
@@ -5352,6 +5405,14 @@ $$('#mobileNav [data-mobile-view]').forEach(b=>{
   b.addEventListener('click',()=>setMobileView(b.dataset.mobileView));
 });
 
+$('#mobileExitDrawing')?.addEventListener('click',()=>setMobileView('settings'));
+$('#mobileDimInput')?.addEventListener('pointerdown',e=>e.preventDefault());
+$('#mobileDimInput')?.addEventListener('focus',e=>e.target.blur());
+// iOS can otherwise pan the visual viewport or pinch-zoom a fixed drawing surface.
+const lockDrawingGesture=e=>{if(isMobile()&&document.body.dataset.mobileView==='draw'&&e.cancelable)e.preventDefault()};
+document.addEventListener('touchmove',lockDrawingGesture,{passive:false,capture:true});
+for(const name of ['gesturestart','gesturechange','gestureend'])document.addEventListener(name,lockDrawingGesture,{passive:false,capture:true});
+document.addEventListener('touchstart',e=>{if(e.touches.length>1)lockDrawingGesture(e)},{passive:false,capture:true});
 $('#mobileDrawSettings')?.addEventListener('click',()=>setMobileView('settings'));
 $('#mobileUndo')?.addEventListener('click',undo);
 $('#mobileCloseRoom')?.addEventListener('click',closeRoom);
@@ -5363,7 +5424,7 @@ $$('[data-mobile-dir]').forEach(b=>{
 
 $('#mobileDimOk')?.addEventListener('click',commitMobileDimension);
 $('#mobileDimCancel')?.addEventListener('click',()=>{
-  pending=null;hoverWall=null;smartGuide=null;
+  pending=null;editWall=null;closedEditWall=null;hoverWall=null;smartGuide=null;
   drawingPaused=pts.length>0&&!closed;
   document.body.classList.remove('mobileDimOpen');
   render();
@@ -5379,7 +5440,7 @@ $('#mobileDimInput')?.addEventListener('keydown',e=>{
 function mobileNumPadPress(key){
   const input=$('#mobileDimInput');
   if(!input||!document.body.classList.contains('mobileDimOpen'))return;
-  const sync=()=>{if(pending){pending.raw=input.value;const pi=$('#pendingDim');if(pi)pi.value=input.value}input.focus({preventScroll:true});input.setSelectionRange(input.value.length,input.value.length)};
+  const sync=()=>{if(pending)pending.raw=input.value;const target=mobileEditor()?.input;if(target)target.value=input.value;input.setSelectionRange(input.value.length,input.value.length)};
   let value=String(input.value||'');
   if(key==='enter'){
     commitMobileDimension();
@@ -5528,7 +5589,7 @@ function restoreSnapshot(snap,id=null){lightHistory=[];lightUndoContext=false;$(
   $('#projectName').value=snap.name||'';
   fillSuspensionFields({suspensionSizing:'auto',wireLength:snap.draft?.fields?.wireLength??250,directLength:snap.draft?.fields?.directLength??0,noniusLength:snap.draft?.fields?.noniusLength??0,ceilingDrop:snap.draft?.fields?.ceilingDrop??0});
   Object.entries(snap.draft?.fields||{}).forEach(([key,value])=>{const el=document.getElementById(key);if(el&&el.closest('#settingsSection')&&key!=='projectName'){if(el.type==='checkbox')el.checked=!!value;else el.value=String(value)}});
-  Object.assign(price,defaultPrices,migratedPiecePrices(snap.prices||{}));render();workspaceReady=true;saveDraft();persist();setMobileView(isMobile()&&!mobileIntroDone()?'settings':'draw');
+  Object.assign(price,defaultPrices,migratedPiecePrices(snap.prices||{}));render();workspaceReady=true;saveDraft();persist();setMobileView(isMobile()?'settings':'draw');
   $('#resultsEmpty').hidden=!!current();
 }
 async function newProject(){
