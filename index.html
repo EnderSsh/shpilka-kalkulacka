@@ -1128,7 +1128,155 @@ body[data-mobile-view] #drawingComparisons #orientationCompare{display:block!imp
  @media(max-width:760px){.headerActions{width:100%;flex-wrap:wrap;gap:8px}.headerActions .appNav{flex:1 1 100%}#themeToggle{margin-left:auto;min-height:40px;font-size:12px}}
 }
 @media print{#themeToggle{display:none!important}html{color-scheme:light}}
-</style></head>
+</style>
+<style id="mobile-v98-style">
+/* ===== Mobile UX v98: fullscreen drawing, keyboard-safe dimension input, aligned UI ===== */
+@media screen and (max-width:760px){
+  :root{--mobile-gap:10px;--mobile-radius:12px}
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  body{font-size:14px}
+  header{padding:9px 10px!important;min-height:0!important;height:auto!important;gap:7px!important}
+  header h1{font-size:15px!important;line-height:1.2}
+  .appNav{gap:4px!important}
+  .appNav button{min-height:38px!important;padding:6px 8px!important;font-size:12px!important}
+  .workspaceBar{padding:7px 8px!important;min-height:0!important}
+  main{padding:8px!important}
+  .card,.drawing,.settingsFold,.projectQuick{border-radius:var(--mobile-radius)!important}
+  .side .card,.side .settingsFold{margin:0 0 9px!important}
+  .side label{margin-bottom:9px!important;line-height:1.3}
+  .side input,.side select,.pageSection input,.pageSection select{
+    width:100%!important;min-height:46px!important;font-size:16px!important;padding:9px 10px!important;
+  }
+  .side button,.pageSection button{min-height:44px}
+  .side .grid2,.side .compactGrid,.detailGrid{grid-template-columns:1fr!important;gap:8px!important}
+  .sectionTitle{min-height:30px;gap:8px}
+  .sectionTitle h2{font-size:16px!important;line-height:1.2}
+  .small{line-height:1.35}
+  .checkBoxRow{min-height:46px!important}
+  .settingsFold{padding:3px 10px!important}
+  .advancedDetails{padding-top:8px!important;margin-top:8px!important}
+  .advancedDetails summary,.settingsFold>summary{min-height:38px;display:flex;align-items:center}
+  #rooms{max-height:none!important}
+  .projectActions{display:grid!important;grid-template-columns:1fr 1fr!important}
+  .screenTables{padding:8px!important}
+  .tabs{gap:5px!important}
+  .tabs button{min-height:40px!important}
+  .pricePanel,.projectCard{padding:12px!important}
+
+  /* No arrow pad / long gesture instructions on phone. */
+  .mobileFingerHint,.mobileDirection,#mobileToggleArrows{display:none!important}
+
+  /* Clean drawing controls. */
+  .mobileDrawActions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr 1.15fr!important;
+    gap:7px!important;
+    margin:7px 0!important;
+  }
+  #mobileNewRoom{display:none!important}
+  .mobileDrawActions button{min-height:44px!important;font-size:13px!important}
+  .mobileZoom{display:none!important}
+  .drawHelp{display:none!important}
+  .drawHeadHint{display:none!important}
+  .drawBottomBar{display:none!important}
+
+  /* Full-screen interactive drawing workspace. */
+  body.mobileDrawingMode{overflow:hidden!important;padding:0!important;background:#fff}
+  body.mobileDrawingMode header,
+  body.mobileDrawingMode .workspaceBar,
+  body.mobileDrawingMode .mobileNav{display:none!important}
+  body.mobileDrawingMode main{display:block!important;padding:0!important;height:100dvh!important;overflow:hidden!important}
+  body.mobileDrawingMode .work{display:block!important;height:100dvh!important;max-height:none!important;overflow:hidden!important;padding:0!important}
+  body.mobileDrawingMode #drawSection{
+    position:fixed!important;
+    inset:0!important;
+    z-index:10000!important;
+    width:100%!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    display:flex!important;
+    flex-direction:column!important;
+    padding:calc(8px + env(safe-area-inset-top)) 8px calc(8px + env(safe-area-inset-bottom))!important;
+    margin:0!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+    overflow:hidden!important;
+  }
+  body.mobileDrawingMode #drawSection .drawTopHead{
+    flex:0 0 auto!important;
+    margin:0 0 4px!important;
+    padding:0 2px!important;
+    min-height:32px;
+    align-items:center!important;
+  }
+  body.mobileDrawingMode #drawSection .drawTopHead h2{font-size:16px!important}
+  body.mobileDrawingMode #drawSection .mobileDrawActions{flex:0 0 auto!important;order:2}
+  body.mobileDrawingMode #drawSection .drawWrap{
+    order:3;
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:auto!important;
+    border-radius:10px!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    background:#fff!important;
+  }
+  body.mobileDrawingMode #drawSvg{
+    display:block!important;
+    min-width:760px!important;
+    width:760px!important;
+    height:auto!important;
+    max-height:none!important;
+    touch-action:none!important;
+  }
+
+  /* Exact dimension editor stays inside the visual viewport above the keyboard. */
+  .mobileDimBar{
+    left:8px!important;
+    right:8px!important;
+    bottom:auto!important;
+    z-index:12050!important;
+    grid-template-columns:minmax(0,1fr) 58px 44px!important;
+    gap:6px!important;
+    padding:7px!important;
+    border-radius:12px!important;
+    box-shadow:0 8px 30px rgba(15,23,42,.22)!important;
+  }
+  .mobileDimBar.show{display:grid!important}
+  .mobileDimBar input{
+    min-width:0!important;
+    width:100%!important;
+    min-height:48px!important;
+    font-size:18px!important;
+    font-weight:800!important;
+    padding:8px 10px!important;
+  }
+  .mobileDimBar button{min-width:0!important;min-height:48px!important;padding:6px!important}
+  body.mobileDimOpen #drawSection{padding-bottom:78px!important}
+
+  /* First-run checklist. */
+  #mobileFirstRun{
+    border:1px solid #b9d2c6!important;
+    background:#f4faf7!important;
+    padding:12px!important;
+    margin-bottom:10px!important;
+  }
+  #mobileFirstRun h2{margin:0 0 6px!important;font-size:17px!important}
+  #mobileFirstRun p{margin:0 0 10px;color:#52606d;font-size:12px;line-height:1.45}
+  #mobileFirstRun .mobileChecklist{display:grid;gap:6px;margin:8px 0 12px}
+  #mobileFirstRun .mobileChecklist div{
+    padding:8px 9px;border:1px solid #dce8e2;border-radius:9px;background:#fff;font-size:12px;line-height:1.35;
+  }
+  #mobileFirstRun .mobileChecklist b{display:block;margin-bottom:2px;color:#23483f}
+  #mobileFirstRun .firstRunActions{display:grid;grid-template-columns:1fr;gap:7px}
+  #mobileFirstRun .firstRunActions button{width:100%}
+}
+</style>
+</head>
 <body data-app-page="calculator" data-mobile-view="draw">
 <header>
 <div><h1>Shpilka — kalkulačka sadrokartónového stropu</h1>
@@ -1467,7 +1615,7 @@ body[data-mobile-view] #drawingComparisons #orientationCompare{display:block!imp
 <dialog id="pricePreview"><h2>Načítať cenník</h2><p class="small">Zmenia sa iba uvedené ceny v aktuálnom projekte.</p><div id="pricePreviewTable" class="previewScroll"></div><div class="row" style="margin-top:15px"><button id="applyPrices" class="primary">Použiť ceny</button><button id="cancelPrices">Zrušiť</button></div></dialog>
 
 <div id="mobileDimBar" class="mobileDimBar" aria-live="polite">
-  <input id="mobileDimInput" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="Presný rozmer, napr. 3,70 m">
+  <input id="mobileDimInput" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Presný rozmer steny v metroch" placeholder="Presný rozmer, napr. 3,70 m">
   <button id="mobileDimOk" class="blue">OK</button>
   <button id="mobileDimCancel">×</button>
 </div>
@@ -5492,5 +5640,153 @@ restoreWorkspace();
  const sync=()=>{const dark=document.documentElement.dataset.theme==='dark';button.textContent=dark?'☀ Svetlá téma':'☾ Tmavá téma';button.setAttribute('aria-label',dark?'Prepnúť na svetlú tému':'Prepnúť na tmavú tému');button.setAttribute('aria-pressed',String(dark));document.querySelector('meta[name="theme-color"]').content=dark?'#101916':'#ffffff'};
  button.addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;try{localStorage.setItem('shpilka-ui-theme',theme)}catch{}sync()});sync();
 })();
-</script></body>
+</script>
+<script id="mobile-v98-script">
+(()=>{
+  const mq=window.matchMedia('(max-width:760px)');
+  const INTRO_KEY='sdk_mobile_intro_v98';
+
+  function mobileNow(){return mq.matches}
+  function introDone(){try{return localStorage.getItem(INTRO_KEY)==='1'}catch(e){return false}}
+  function markIntroDone(){try{localStorage.setItem(INTRO_KEY,'1')}catch(e){}}
+
+  function setVisualViewportPosition(){
+    const bar=document.getElementById('mobileDimBar');
+    if(!bar||!mobileNow()||!bar.classList.contains('show'))return;
+    const vv=window.visualViewport;
+    const h=bar.offsetHeight||62;
+    if(vv){
+      const top=Math.max(8,vv.offsetTop+vv.height-h-8);
+      bar.style.top=Math.round(top)+'px';
+    }else{
+      bar.style.top='';
+      bar.style.bottom='calc(8px + env(safe-area-inset-bottom))';
+    }
+  }
+
+  function addDrawingSettingsButton(){
+    const actions=document.querySelector('.mobileDrawActions');
+    if(!actions||document.getElementById('mobileDrawSettings'))return;
+    const b=document.createElement('button');
+    b.id='mobileDrawSettings';
+    b.type='button';
+    b.textContent='Nastavenia';
+    b.addEventListener('click',()=>setMobileView('settings'));
+    actions.insertBefore(b,actions.firstChild);
+  }
+
+  function addFirstRun(){
+    if(!mobileNow())return;
+    const host=document.getElementById('settingsSection');
+    if(!host)return;
+    let box=document.getElementById('mobileFirstRun');
+    if(!box){
+      box=document.createElement('div');
+      box.id='mobileFirstRun';
+      box.className='card compactCard';
+      box.innerHTML=
+        '<h2>Pred prvým výpočtom skontroluj nastavenia</h2>'+
+        '<p>Kalkulačka vie počítať viac variantov. Prejdi tieto body aspoň raz, aby výsledok zodpovedal reálnej skladbe stropu.</p>'+
+        '<div class="mobileChecklist">'+
+          '<div><b>Miestnosť a SDK</b>Názov, typ dosky a rezervy materiálu.</div>'+
+          '<div><b>Rošt</b>Jednoduchý / dvojitý, smer a rozostupy CD.</div>'+
+          '<div><b>Zavesenie</b>Typ závesu a plánované zníženie hotového stropu.</div>'+
+          '<div><b>Profily</b>Dĺžky CD/UD, rezerva a pravidlá krajov/spojov.</div>'+
+          '<div><b>Kotvenie</b>Podklad pre UD, rozostup a štart kotiev.</div>'+
+          '<div><b>SDK rozkladka</b>Rozmery dosky, striedanie spojov a minimálny krajný kus.</div>'+
+          '<div><b>Tmelenie a pásky</b>Spotreby môžeš ponechať predvolené alebo upraviť.</div>'+
+        '</div>'+
+        '<div class="firstRunActions"><button id="mobileFirstRunDone" class="primary" type="button">Skontrolované — prejsť na kreslenie</button></div>';
+      host.prepend(box);
+      document.getElementById('mobileFirstRunDone').addEventListener('click',()=>{
+        markIntroDone();
+        box.remove();
+        setMobileView('draw');
+      });
+    }
+    if(introDone())box.remove();
+  }
+
+  function expandSettingsForFirstRun(){
+    if(!mobileNow()||introDone())return;
+    document.querySelectorAll('#settingsSection .card').forEach(card=>card.classList.remove('mobileCollapsed'));
+    document.querySelectorAll('#settingsSection details').forEach(d=>d.open=true);
+  }
+
+  const originalSetMobileView=window.setMobileView||setMobileView;
+  window.setMobileView=function(view){
+    originalSetMobileView(view);
+    if(mobileNow()&&view==='draw'){
+      document.body.classList.add('mobileDrawingMode');
+    }else{
+      document.body.classList.remove('mobileDrawingMode');
+      document.body.classList.remove('mobileDimOpen');
+    }
+    if(view==='settings'){
+      addFirstRun();
+      expandSettingsForFirstRun();
+    }
+    setTimeout(setVisualViewportPosition,0);
+  };
+
+  const originalUpdateMobileDimBar=window.updateMobileDimBar||updateMobileDimBar;
+  window.updateMobileDimBar=function(){
+    const bar=document.getElementById('mobileDimBar');
+    const was=!!bar?.classList.contains('show');
+    originalUpdateMobileDimBar();
+    const shown=!!bar?.classList.contains('show');
+    document.body.classList.toggle('mobileDimOpen',mobileNow()&&shown);
+    if(shown){
+      setVisualViewportPosition();
+      if(!was){
+        setTimeout(()=>{
+          const input=document.getElementById('mobileDimInput');
+          if(input&&document.activeElement!==input){
+            input.focus({preventScroll:true});
+            input.select?.();
+          }
+          setVisualViewportPosition();
+        },40);
+      }
+    }
+  };
+
+  const dim=document.getElementById('mobileDimInput');
+  if(dim){
+    dim.setAttribute('inputmode','text');
+    dim.setAttribute('enterkeyhint','done');
+    dim.addEventListener('focus',()=>setTimeout(setVisualViewportPosition,30));
+    dim.addEventListener('input',setVisualViewportPosition);
+  }
+
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize',setVisualViewportPosition);
+    visualViewport.addEventListener('scroll',setVisualViewportPosition);
+  }
+  window.addEventListener('orientationchange',()=>setTimeout(setVisualViewportPosition,180));
+  window.addEventListener('resize',()=>setTimeout(setVisualViewportPosition,30));
+
+  addDrawingSettingsButton();
+  addFirstRun();
+  expandSettingsForFirstRun();
+
+  if(mobileNow()){
+    if(!introDone()){
+      setTimeout(()=>window.setMobileView('settings'),0);
+    }else if(document.body.dataset.mobileView==='draw'){
+      document.body.classList.add('mobileDrawingMode');
+    }
+  }
+
+  if(mq.addEventListener)mq.addEventListener('change',()=>{
+    if(!mobileNow()){
+      document.body.classList.remove('mobileDrawingMode','mobileDimOpen');
+    }else{
+      addFirstRun();
+      if(!introDone())window.setMobileView('settings');
+    }
+  });
+})();
+</script>
+</body>
 </html>
